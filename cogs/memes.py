@@ -7,7 +7,7 @@ class Memes:
     """
     'Memes were a mistake.' - Richard Dawkins
 
-    Handles user-defined commands and images.
+    Handles simple user-defined commands in the form of command -> response.
     """
     def __init__(self, bot):
         self.chiaki = bot
@@ -22,9 +22,11 @@ class Memes:
     def add_command(self, name, response):
         """Adds a simple custom command to the bot."""
         command = self.chiaki.get_command(name)
-        if command is None:
+        # custom commands are only added if their name doesn't overlap with
+        # an existing 'normal' command. spaces also break things.
+        if command is None and ' ' not in name:
             command = self.chiaki.command(name = name, cls = CustomCommand,
-                                          pass_context = True, hidden = True)(custom_callback)
+                           pass_context = True, hidden = True)(custom_callback)
             command.response = response
 
     def remove_command(self, name):
@@ -32,15 +34,6 @@ class Memes:
         command = self.chiaki.get_command(name)
         if isinstance(command, CustomCommand):
             self.chiaki.remove_command(name)
-
-    @commands.command()
-    async def memes(self):
-        """Lists all memes currently available."""
-        if self.loaded:
-            memes = [ '`{0}`'.format(meme) for meme in self.loaded ]
-            await self.chiaki.say('I\'ve recorded memes for: {0}.'.format(', '.join(memes)))
-        else:
-            await self.chiaki.say('There\'s nothing in my records!')
 
     @commands.group(invoke_without_command = True)
     async def meme(self, *, meme):
@@ -50,19 +43,28 @@ class Memes:
             await self.chiaki.say(self.loaded[meme])
 
     @meme.command()
+    async def list(self):
+        """Lists all memes currently available."""
+        if self.loaded:
+            memes = [ '`{0}`'.format(meme) for meme in self.loaded ]
+            response = 'I\'ve recorded memes for: {0}.'
+            response = response.format(', '.join(memes))
+        else:
+            response = 'Somehow in my lifetime of studying memes I have recorded none.'
+        await self.chiaki.say(response)
+
+    @meme.command()
     async def add(self, meme, address):
         """Add a new meme."""
         meme = meme.lower()
-        if (meme in ['add', 'remove', 'update'] or meme.startswith('add ') or meme.startswith('remove ')
-            or meme.startswith('update ')):
-            await self.chiaki.say('I can\'t add anything that starts with `add`, `remove`, or `update`.')
-        elif meme in self.loaded:
-            await self.chiaki.say('I already have an entry under `{0}`. To overwrite it, use `?meme update`.'.format(meme))
+        if meme in self.loaded:
+            response = 'I already have an entry under `{0}`. To overwrite it, use `?meme update`.'
+            response = response.format(meme)
         else:
-            self.loaded[meme] = address
+            response = self.loaded[meme] = address
             self.add_command(meme, address)
             self.save_to_file()
-            await self.chiaki.say(self.loaded[meme])
+        await self.chiaki.say(response)
 
     @meme.command()
     async def remove(self, *, meme):
@@ -72,22 +74,28 @@ class Memes:
             self.loaded.pop(meme)
             self.remove_command(meme)
             self.save_to_file()
-            await self.chiaki.say('I\'ve removed all reference to `{0}` from my archives.'.format(meme))
+            response = 'I\'ve removed all reference to `{0}` from my archives.'
+            response = response.format(meme)
         else:
-            await self.chiaki.say('I don\'t seem to have anything under `{0}`?'.format(meme))
+            response = 'I don\'t seem to have anything under `{0}`?'
+            response = response.format(meme)
+        await self.chiaki.say(response)
 
     @meme.command()
     async def update(self, meme, address):
         """Update an existing meme to a new address."""
         meme = meme.lower()
         if meme in self.loaded:
-            self.loaded[meme] = address
+            response = self.loaded[meme] = address
+            # removes and reimplements command.
+            # unfortunately updating the command causes errors i don't understand.
             self.remove_command(meme)
             self.add_command(meme, address)
             self.save_to_file()
-            await self.chiaki.say(address)
         else:
-            await self.chiaki.say('I don\'t seem to have anything under `{0}`?'.format(meme))
+            response = 'I don\'t seem to have anything under `{0}`?'
+            response = response.format(meme)
+        await self.chiaki.say(response)
 
     def save_to_file(self):
         """
@@ -102,7 +110,6 @@ class CustomCommand(commands.Command):
     Implementation for custom commands.
     This allows entries in the ?memes list to be called as their own commands,
     if a command by that name doesn't exist already.
-    I honestly have no idea what I'm doing.
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

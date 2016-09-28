@@ -22,18 +22,20 @@ class Misc:
         # this is legit just an in-joke function.
         user = self.chiaki.get_cog('Nicknames').get_member(context, user)
         if not user:
-            await self.chiaki.say('I don\'t know who that is?')
+            response = 'I don\'t know who that is?'
         elif user.id == '106971793868197888':
-            await self.chiaki.say('{0} is a cute anime girl.'.format(user.display_name))
+            response = '{0} is a cute anime girl.'.format(user.display_name)
         elif user.bot:
-            await self.chiaki.say('..........')
+            response = '..........'
         else:
-            await self.chiaki.say('{0} is most definitely a nerd.'.format(user.display_name))
+            response = '{0} is most definitely a nerd.'.format(user.display_name)
+        await self.chiaki.say(response)
 
-    @commands.command()
-    async def debug(self, *, command):
-        """Debug command. Remove before production."""
-        await self.chiaki.say(eval(command))
+    @commands.command(pass_context = True, hidden = True)
+    async def debug(self, context, *, command):
+        """Debug command. Owner-only through a very lazy solution."""
+        if context.message.author.id == '106971793868197888':
+            await self.chiaki.say(eval(command))
 
 def setup(bot):
     bot.add_cog(Misc(bot))
