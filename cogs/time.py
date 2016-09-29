@@ -32,7 +32,7 @@ class Time:
         loop = self.chiaki.loop
         for key, item in dict(self.reminders).items():
             time = date_to_seconds(item[3])
-            if time > 0:
+            if time > 0 and time < 604800:
                 task = loop.create_task(self.start_reminder(key, time))
                 self.tasks[key] = task
             else:

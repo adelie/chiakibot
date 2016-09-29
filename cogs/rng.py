@@ -28,6 +28,9 @@ class RNG:
             await self.chiaki.say('Oops! I can\'t roll dice that aren\'t in NdN format.')
         else:
             rolls, limit = tokens
+            if rolls > 999:
+                await self.chiaki.say('pls no....')
+                return
             if not rolls:
                 rolls = '1'
             roll = [random.randint(1, int(limit)) for roll in range(int(rolls))]
