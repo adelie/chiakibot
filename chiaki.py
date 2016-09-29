@@ -9,6 +9,14 @@ chiaki = commands.Bot(command_prefix = '?' ,
 extensions = [ 'cogs.admin', 'cogs.memes', 'cogs.misc', 'cogs.moderation' , 'cogs.rng',
                'cogs.time', 'cogs.nicknames' ]
 
+## something keeps killing her so i'll just add logging..
+discord_logger = logging.getLogger('discord')
+discord_logger.setLevel(logging.CRITICAL)
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+handler = logging.FileHandler(filename='chiaki.log', encoding='utf-8', mode='w')
+log.addHandler(handler)
+
 @chiaki.event
 async def on_ready():
     print('Logged in as {0} ({1}).'.format(chiaki.user.name, chiaki.user.id))
@@ -33,7 +41,12 @@ async def on_command_error(error, context):
         await chiaki.send_message(context.message.channel, usage)
     else:
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+        log.warning(traceback.format_exception_only(type(error), error)[0])
 
+@chiaki.event
+async def on_command(command, context):
+    message = context.message
+    log.info('{0.timestamp}: {0.author.name}: {0.content}'.format(message))
 
 def load_config():
     with open('config.json') as config:
