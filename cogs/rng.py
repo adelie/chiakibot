@@ -28,12 +28,13 @@ class RNG:
             await self.chiaki.say('Oops! I can\'t roll dice that aren\'t in NdN format.')
         else:
             rolls, limit = tokens
-            if rolls > 999:
-                await self.chiaki.say('pls no....')
+            rolls, limit = int(rolls), int(limit)
+            if rolls >= 999:
+                await self.chiaki.say('Please stop trying to commit bot murder.')
                 return
             if not rolls:
                 rolls = '1'
-            roll = [random.randint(1, int(limit)) for roll in range(int(rolls))]
+            roll = [random.randint(1, limit) for roll in range(rolls)]
             await self.chiaki.say('I rolled {0} for a sum of `{1}`.'.format(', '.join([str(x) for x in roll]), str(sum(roll))))
 
 def setup(bot):
