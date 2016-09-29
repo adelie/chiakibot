@@ -2,11 +2,12 @@ import discord
 from discord.ext import commands
 import json
 import traceback, sys
-
+import logging
 
 chiaki = commands.Bot(command_prefix = '?' ,
                       description = 'There are a lot of things I still don\'t understand.')
-extensions = [ 'cogs.memes', 'cogs.misc', 'cogs.moderation' , 'cogs.rng', 'cogs.time', 'cogs.nicknames' ]
+extensions = [ 'cogs.admin', 'cogs.memes', 'cogs.misc', 'cogs.moderation' , 'cogs.rng',
+               'cogs.time', 'cogs.nicknames' ]
 
 @chiaki.event
 async def on_ready():

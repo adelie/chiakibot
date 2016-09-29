@@ -54,15 +54,15 @@ class Memes:
         await self.chiaki.say(response)
 
     @meme.command()
-    async def add(self, meme, address):
+    async def add(self, meme, *, reaction):
         """Add a new meme."""
         meme = meme.lower()
         if meme in self.loaded:
             response = 'I already have an entry under `{0}`. To overwrite it, use `?meme update`.'
             response = response.format(meme)
         else:
-            response = self.loaded[meme] = address
-            self.add_command(meme, address)
+            response = self.loaded[meme] = reaction
+            self.add_command(meme, reaction)
             self.save_to_file()
         await self.chiaki.say(response)
 
@@ -82,15 +82,15 @@ class Memes:
         await self.chiaki.say(response)
 
     @meme.command()
-    async def update(self, meme, address):
-        """Update an existing meme to a new address."""
+    async def update(self, meme, *, reaction):
+        """Update an existing meme to a new reaction."""
         meme = meme.lower()
         if meme in self.loaded:
-            response = self.loaded[meme] = address
+            response = self.loaded[meme] = reaction
             # removes and reimplements command.
             # unfortunately updating the command causes errors i don't understand.
             self.remove_command(meme)
-            self.add_command(meme, address)
+            self.add_command(meme, reaction)
             self.save_to_file()
         else:
             response = 'I don\'t seem to have anything under `{0}`?'
@@ -118,7 +118,7 @@ class CustomCommand(commands.Command):
     async def invoke(self, context):
         server = context.message.server
         if server is not None:
-            self.callback = functools.partial(self.callback, self.response)
+            self.callback = functools.partial(custom_callback, self.response)
             self.params = inspect.signature(self.callback).parameters
             await super().invoke(context)
 

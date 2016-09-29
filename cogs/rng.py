@@ -17,7 +17,7 @@ class RNG:
     async def choose(self, *options):
         """Chooses one of many options."""
         chosen = options[random.randint(0, len(options) - 1)]
-        await self.chiaki.say('I choose you, `{0}`!'.format(chosen))
+        await self.chiaki.say('I choose you, {0}!'.format(chosen))
 
     @commands.command()
     async def roll(self, *, dice):

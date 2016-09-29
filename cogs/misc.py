@@ -31,11 +31,5 @@ class Misc:
             response = '{0} is most definitely a nerd.'.format(user.display_name)
         await self.chiaki.say(response)
 
-    @commands.command(pass_context = True, hidden = True)
-    async def debug(self, context, *, command):
-        """Debug command. Owner-only through a very lazy solution."""
-        if context.message.author.id == '106971793868197888':
-            await self.chiaki.say(eval(command))
-
 def setup(bot):
     bot.add_cog(Misc(bot))
