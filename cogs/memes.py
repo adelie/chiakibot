@@ -17,7 +17,7 @@ class Memes:
         except Exception as e:
             self.loaded = {}
 
-    def initialize(self) {
+    def initialize(self):
         for name, response in self.loaded.items():
             self.add_command(name, response)
 

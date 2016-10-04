@@ -35,7 +35,7 @@ class Time:
             if time > 0 and time < 604800:
                 task = loop.create_task(self.start_reminder(key, time))
                 self.tasks[key] = task
-            else if time <= 0:
+            elif time <= 0:
                 self.reminders.pop(key)
         # schedules loop not here because schedules not implemented, lol.
 
