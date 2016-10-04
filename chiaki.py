@@ -26,7 +26,7 @@ async def on_message(message):
     if message.author.bot:
         return
     # kill me for being guilt-tripped into writing this
-    if message.content[0] != '?' and 'ayy' in message.content.split():
+    if message.content and message.content[0] != '?' and 'ayy' in message.content.split():
         await chiaki.send_message(message.channel, 'lmao')
     await chiaki.process_commands(message)
 
