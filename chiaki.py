@@ -40,7 +40,6 @@ async def on_command_error(error, context):
         usage = 'Usage: `{0}`'.format(formatter.get_command_signature())
         await chiaki.send_message(context.message.channel, usage)
     else:
-        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
         log.warning(traceback.format_exception_only(type(error), error)[0])
 
 @chiaki.event
@@ -59,6 +58,8 @@ def run_chiaki():
             chiaki.load_extension(extension)
         except Exception as e:
             print('Failed to load extension {0}: {1}'.format(extension, e))
+    chiaki.get_cog('Memes').initialize()
     chiaki.run(config['token'])
+
 
 run_chiaki()

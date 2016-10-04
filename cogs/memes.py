@@ -16,6 +16,8 @@ class Memes:
                 self.loaded = json.load(memes)
         except Exception as e:
             self.loaded = {}
+
+    def initialize(self) {
         for name, response in self.loaded.items():
             self.add_command(name, response)
 
