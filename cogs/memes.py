@@ -143,6 +143,7 @@ class Memes:
                 current.append(reaction)
             else:
                 current = [current, reaction]
+            self.loaded[meme] = current
             self.remove_command(meme)
             self.add_command(meme, current)
             self.save_to_file()
@@ -160,6 +161,7 @@ class Memes:
         if meme in self.loaded and isinstance(self.loaded[meme], list) and reaction in self.loaded[meme]:
             current = self.loaded[meme]
             current.remove(reaction)
+            self.loaded[meme] = current
             self.remove_command(meme)
             self.add_command(meme, current)
             self.save_to_file()
