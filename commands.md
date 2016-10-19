@@ -22,6 +22,8 @@ If the command references a user, you can either use the @mention, their name, t
 
 `?meme list` brings up a list of every user-defined command.
 
+`?meme addrandom <name> <responses>` adds a meme that pulls one of many possible responses.
+
 #### Moderation
 
 `?topic <topic>` changes the topic of the channel. Chiaki needs permissions, you don't.

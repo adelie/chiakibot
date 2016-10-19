@@ -31,6 +31,5 @@ class Admin:
         """Exits the bot."""
         await self.chiaki.logout()
 
-
 def setup(bot):
     bot.add_cog(Admin(bot))

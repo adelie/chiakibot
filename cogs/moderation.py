@@ -12,6 +12,7 @@ class Moderation:
     @commands.command(pass_context = True)
     async def topic(self, context, *, text):
         """Changes the topic of the current channel to something else."""
+        text = text.strip(' "')
         await self.chiaki.edit_channel(context.message.channel, topic = text)
 
 def setup(bot):

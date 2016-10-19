@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import json
 import functools, inspect
+import random
 
 class Memes:
     """
@@ -40,9 +41,12 @@ class Memes:
     @commands.group(invoke_without_command = True)
     async def meme(self, *, meme):
         """Display a meme."""
-        meme = meme.lower()
+        meme = meme.lower().strip(' "')
         if meme in self.loaded:
-            await self.chiaki.say(self.loaded[meme])
+            response = self.loaded[meme]
+            if isinstance(response, list):
+                response = random.choice(response)
+            await self.chiaki.say(response)
 
     @meme.command()
     async def list(self):
@@ -55,10 +59,23 @@ class Memes:
             response = 'Somehow in my lifetime of studying memes I have recorded none.'
         await self.chiaki.say(response)
 
+    @commands.command()
+    async def random(self):
+        """Chooses a random meme."""
+        if self.loaded:
+            await self.chiaki.say(random.choice(list(self.loaded.values())))
+
+    @meme.command()
+    async def random(self):
+        """Chooses a random meme."""
+        if self.loaded:
+            await self.chiaki.say(random.choice(list(self.loaded.values())))
+
     @meme.command()
     async def add(self, meme, *, reaction):
         """Add a new meme."""
         meme = meme.lower()
+        reaction = reaction.strip(' "')
         if meme in self.loaded:
             response = 'I already have an entry under `{0}`. To overwrite it, use `?meme update`.'
             response = response.format(meme)
@@ -69,9 +86,24 @@ class Memes:
         await self.chiaki.say(response)
 
     @meme.command()
+    async def addrandom(self, meme, *reactions):
+        """Adds a new meme that pulls a random response from a list."""
+        meme = meme.lower()
+        reactions = list(reactions)
+        if meme in self.loaded:
+            response = 'I already have an entry under `{0}`. To overwrite it, use `?meme update`.'
+            response = response.format(meme)
+        else:
+            self.loaded[meme] = reactions
+            self.add_command(meme, reactions)
+            self.save_to_file()
+            response = random.choice(reactions)
+        await self.chiaki.say(response)
+
+    @meme.command()
     async def remove(self, *, meme):
         """Remove a meme."""
-        meme = meme.lower()
+        meme = meme.lower().strip(' "')
         if meme in self.loaded:
             self.loaded.pop(meme)
             self.remove_command(meme)
@@ -87,6 +119,7 @@ class Memes:
     async def update(self, meme, *, reaction):
         """Update an existing meme to a new reaction."""
         meme = meme.lower()
+        reaction = reaction.strip(' "')
         if meme in self.loaded:
             response = self.loaded[meme] = reaction
             # removes and reimplements command.
@@ -97,6 +130,43 @@ class Memes:
         else:
             response = 'I don\'t seem to have anything under `{0}`?'
             response = response.format(meme)
+        await self.chiaki.say(response)
+
+    @meme.command()
+    async def updateadd(self, meme, *, reaction):
+        """Adds a reaction as a part of a random meme."""
+        meme = meme.lower()
+        reaction = reaction.strip(' "')
+        if meme in self.loaded:
+            current = self.loaded[meme]
+            if isinstance(current, list):
+                current.append(reaction)
+            else:
+                current = [current, reaction]
+            self.remove_command(meme)
+            self.add_command(meme, current)
+            self.save_to_file()
+            response = reaction
+        else:
+            response = 'I don\'t seem to have anything under `{0}`?'
+            response = response.format(meme)
+        await self.chiaki.say(response)
+
+    @meme.command()
+    async def updateremove(self, meme, *, reaction):
+        """Removes a reaction from a random meme."""
+        meme = meme.lower()
+        reaction = reaction.strip(' "')
+        if meme in self.loaded and isinstance(self.loaded[meme], list) and reaction in self.loaded[meme]:
+            current = self.loaded[meme]
+            current.remove(reaction)
+            self.remove_command(meme)
+            self.add_command(meme, current)
+            self.save_to_file()
+            response = random.choice(current)
+        else:
+            response = 'I don\'t seem to have anything like `{0}`?'
+            response = response.format(reaction)
         await self.chiaki.say(response)
 
     def save_to_file(self):
@@ -125,6 +195,8 @@ class CustomCommand(commands.Command):
             await super().invoke(context)
 
 async def custom_callback(response, context):
+    if isinstance(response, list):
+        response = random.choice(response)
     await context.bot.send_message(context.message.channel, response)
 
 def setup(bot):

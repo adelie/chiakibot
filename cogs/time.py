@@ -56,6 +56,7 @@ class Time:
     async def remind(self, context, time, *, note):
         """Sets a reminder for you."""
         time = timeleft_to_seconds(time)
+        note = note.strip(' "')
         if time:
             date = datetime.utcnow() + timedelta(0, time)
             author = context.message.author
