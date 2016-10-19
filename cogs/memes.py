@@ -65,8 +65,8 @@ class Memes:
         if self.loaded:
             await self.chiaki.say(random.choice(list(self.loaded.values())))
 
-    @meme.command()
-    async def random(self):
+    @meme.command(name = 'random')
+    async def meme_random(self):
         """Chooses a random meme."""
         if self.loaded:
             await self.chiaki.say(random.choice(list(self.loaded.values())))
