@@ -31,5 +31,15 @@ class Misc:
             response = '{0} is most definitely a nerd.'.format(user.display_name)
         await self.chiaki.say(response)
 
+    @commands.command(pass_context = True)
+    async def icon(self, context, *, user):
+        """Links to a larger version of the user's icon."""
+        user = self.chiaki.get_cog('Nicknames').get_member(context, user)
+        if not user:
+            response = 'I don\'t know who that is?'
+        else:
+            response = user.avatar_url
+        await self.chiaki.say(response)
+
 def setup(bot):
     bot.add_cog(Misc(bot))

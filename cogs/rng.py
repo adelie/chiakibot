@@ -33,7 +33,7 @@ class RNG:
                 await self.chiaki.say('Please stop trying to commit bot murder.')
                 return
             if not rolls:
-                rolls = '1'
+                rolls = 1
             roll = [random.randint(1, limit) for roll in range(rolls)]
             await self.chiaki.say('I rolled {0} for a sum of `{1}`.'.format(', '.join([str(x) for x in roll]), str(sum(roll))))
 

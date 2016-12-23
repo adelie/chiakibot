@@ -4,6 +4,7 @@ import json
 import traceback, sys
 import logging
 import re
+import time
 
 ## bot configuration
 chiaki = commands.Bot(command_prefix = '?' ,
@@ -14,7 +15,8 @@ extensions = [ 'cogs.admin', 'cogs.memes', 'cogs.misc', 'cogs.moderation' , 'cog
 ## add some logging since she randomly dies a lot
 log = logging.getLogger('chiaki')
 log.setLevel(logging.INFO)
-handler = logging.FileHandler(filename='chiaki.log', encoding='utf-8', mode='w')
+filename = 'chiaki-{0}.log'.format(time.strftime('%m%d%y', time.localtime()))
+handler = logging.FileHandler(filename=filename, encoding='utf-8', mode='w')
 log.addHandler(handler)
 
 @chiaki.event
@@ -25,7 +27,7 @@ ayy = re.compile('\\bayy+\\b')
 @chiaki.event
 async def on_message(message):
     # kill me please i was forced to write this
-    if message.content and ayy.match(message.content):
+    if message.content and ayy.search(message.content):
         await chiaki.send_message(message.channel, 'lmao')
     if message.author.bot:
         return
