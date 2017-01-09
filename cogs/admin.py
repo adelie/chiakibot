@@ -31,5 +31,17 @@ class Admin:
         """Exits the bot."""
         await self.chiaki.logout()
 
+    @commands.command(hidden = True)
+    @owner_only()
+    async def changepresence(self, *, playing):
+        """Changes current 'playing' line."""
+        # changing status is unnecessary at the moment.
+        if playing == 'none' or playing == 'clear':
+            game = None
+        else:
+            game = game = discord.Game(name = playing, type = 0, url = None)
+        await self.chiaki.change_presence(game = game)
+
+
 def setup(bot):
     bot.add_cog(Admin(bot))
