@@ -63,6 +63,7 @@ for extension in extensions:
         print('Failed to load extension {0}: {1}'.format(extension, e))
 # run some extra on-initialize content here.
 chiaki.get_cog('Memes').initialize()
-chiaki.get_cog('League').api_key = config['riotapi']
+chiaki.get_cog('League').riot_key = config['riotapi']
+chiaki.get_cog('League').chgg_key = config['championgg']
 # all done, let's go!
 chiaki.run(config['token'])

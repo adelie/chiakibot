@@ -13,6 +13,7 @@ class League:
 
     @commands.group(invoke_without_command = False)
     async def league(self):
+        """Legends of Legends is a good solution for low sodium content."""
         pass
 
     @league.command()
@@ -47,6 +48,20 @@ class League:
                                                 response['entries'][0]['leaguePoints'])
 
         await self.chiaki.say('{0} is currently {1}. {2}'.format(summonername, rank, random.choice(insults).format(rank)))
+
+    @league.command(aliases = ['ban'])
+    async def bans(self):
+        """Returns most completely banned champions."""
+        most_banned = 'http://api.champion.gg/stats/champs/mostBanned'
+        r = requests.get(most_banned, { "api_key" : self.chgg_key, "page" : "1", "limit" : "10"})
+        champions = []
+        for champion in r.json()["data"]:
+            data = '{0} ({1}%)'.format(champion["name"], champion["general"]["banRate"])
+            if data not in champions:
+                champions.append(data)
+        await self.chiaki.say('The current most banned champions are {0}.'.format(', '.join(champions)))
+
+
 
 
 
