@@ -52,8 +52,8 @@ class League:
     @league.command(aliases = ['ban'])
     async def bans(self):
         """Returns most completely banned champions."""
-        most_banned = 'http://api.champion.gg/stats/champs/mostBanned'
-        r = requests.get(most_banned, { "api_key" : self.chgg_key, "page" : "1", "limit" : "10"})
+        most_banned = 'http://api.champion.gg/stats/champs/mostBanned?api_key={0}&page=1&limit=10'
+        r = requests.get(most_banned.format(self.chgg_key))
         champions = []
         for champion in r.json()["data"]:
             data = '{0} ({1}%)'.format(champion["name"], champion["general"]["banRate"])
