@@ -9,7 +9,7 @@ import time
 ## bot configuration
 chiaki = commands.Bot(command_prefix = '?' ,
                       description = 'There are a lot of things I still don\'t understand.')
-extensions = [ 'cogs.admin', 'cogs.league', 'cogs.memes', 'cogs.misc', 'cogs.moderation',
+extensions = [ 'cogs.admin', 'cogs.memes', 'cogs.misc', 'cogs.moderation',
                'cogs.rng', 'cogs.time', 'cogs.nicknames' ]
 
 ## add some logging since she randomly dies a lot
@@ -63,7 +63,5 @@ for extension in extensions:
         print('Failed to load extension {0}: {1}'.format(extension, e))
 # run some extra on-initialize content here.
 chiaki.get_cog('Memes').initialize()
-chiaki.get_cog('League').riot_key = config['riotapi']
-chiaki.get_cog('League').chgg_key = config['championgg']
 # all done, let's go!
 chiaki.run(config['token'])

@@ -1,0 +1,4 @@
+config.json
+cogs/storage/*
+__pycache__/
+*.log
