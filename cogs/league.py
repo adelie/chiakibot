@@ -24,7 +24,7 @@ class League:
         summonername = summonername.lower().replace(' ', '')
         rate_limit_error = 'Oops! If you submit too many requests, Riot Games will fine CLG or something. Try again later.'
         summoner_by_name = 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/{0}?api_key={1}'
-        r = requests.get(summoner_by_name.format(summonername, self.api_key))
+        r = requests.get(summoner_by_name.format(summonername, self.riot_key))
         if r.status_code == 429:
             # this is repetitive, but welp.
             await self.chiaki.say(rate_limit_error)
@@ -35,7 +35,7 @@ class League:
 
         # find their ranking
         league_ranking = 'https://na.api.pvp.net/api/lol/na/v2.5/league/by-summoner/{0}?api_key={1}'
-        r = requests.get(league_ranking.format(summonerid, self.api_key))
+        r = requests.get(league_ranking.format(summonerid, self.riot_key))
         if r.status_code == 429:
             await self.chiaki.say(rate_limit_error)
             return

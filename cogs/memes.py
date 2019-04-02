@@ -52,7 +52,7 @@ class Memes:
     async def list(self):
         """Lists all memes currently available."""
         if self.loaded:
-            memes = [ '`{0}`'.format(meme) for meme in self.loaded ]
+            memes = [ meme for meme in self.loaded ]
             response = 'I\'ve recorded memes for: {0}.'
             response = response.format(', '.join(memes))
         else:
@@ -118,9 +118,9 @@ class Memes:
             response = response.format(meme)
         await self.chiaki.say(response)
 
+    """
     @meme.command()
     async def update(self, meme, *, reaction):
-        """Update an existing meme to a new reaction."""
         meme = meme.lower()
         reaction = reaction.strip(' "')
         if meme in self.loaded:
@@ -134,23 +134,25 @@ class Memes:
             response = 'I don\'t seem to have anything under `{0}`?'
             response = response.format(meme)
         await self.chiaki.say(response)
+    """
 
     @meme.command()
-    async def updateadd(self, meme, *, reaction):
+    async def updateadd(self, meme, *reactions):
         """Adds a reaction as a part of a random meme."""
         meme = meme.lower()
-        reaction = reaction.strip(' "')
         if meme in self.loaded:
-            current = self.loaded[meme]
-            if isinstance(current, list):
-                current.append(reaction)
-            else:
-                current = [current, reaction]
-            self.loaded[meme] = current
+            for reaction in reactions:
+                reaction = reaction.strip(' "')
+                current = self.loaded[meme]
+                if isinstance(current, list):
+                    current.append(reaction)
+                else:
+                    current = [current, reaction]
+                self.loaded[meme] = current
             self.remove_command(meme)
             self.add_command(meme, current)
-            self.save_to_file()
             response = reaction
+            self.save_to_file()
         else:
             response = 'I don\'t seem to have anything under `{0}`?'
             response = response.format(meme)
