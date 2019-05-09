@@ -6,7 +6,7 @@ operators = { '^' : (lambda a, b: a ** b, 4, 'right'), '*' : (lambda a, b: a * b
               '/' : (lambda a, b: 1.0 * a / b, 3, 'left'), '+' : (lambda a, b: a + b, 2, 'left'),
               '-' : (lambda a, b: a - b, 2, 'left') }
 
-class RNG:
+class RNG(commands.Cog):
     """Commands related to random number generation."""
     def __init__(self, bot):
         self.chiaki = bot

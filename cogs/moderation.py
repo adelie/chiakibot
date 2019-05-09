@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-class Moderation:
+class Moderation(commands.Cog):
     """
     Commands for channel and role moderation.
     There isn't much here because I'm designed for a private server.

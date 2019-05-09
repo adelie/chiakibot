@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import json
 
-class Nicknames:
+class Nicknames(commands.Cog):
     """
     Deals with identifying members and other things.
     I've been informed that JSON is reasonable data storage. I pray that is correct.

@@ -4,7 +4,7 @@ import json
 import functools, inspect
 import random
 
-class Memes:
+class Memes(commands.Cog):
     """
     'Memes were a mistake.' - Richard Dawkins
 

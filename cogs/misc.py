@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-class Misc:
+class Misc(commands.Cog):
     """I'm not very good at categorizing things."""
     def __init__(self, bot):
         self.chiaki = bot

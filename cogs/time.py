@@ -6,7 +6,7 @@ import pytz
 import json
 import re
 
-class Time:
+class Time(commands.Cog):
     """
     Commands dealing with the passage of time.
     """

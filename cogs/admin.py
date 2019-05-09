@@ -8,7 +8,7 @@ def owner_only():
         return context.message.author.id == '106971793868197888'
     return commands.check(owner_check)
 
-class Admin:
+class Admin(commands.Cog):
     """
     Special debug commands so I can figure out what's going on, because I still
     haven't implemented a proper logging system.
