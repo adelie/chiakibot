@@ -7,39 +7,39 @@ class Misc(commands.Cog):
         self.chiaki = bot
 
     @commands.command()
-    async def say(self, *, repeat):
+    async def say(self, context, *, repeat):
         """A generic repeat command."""
-        await self.chiaki.say(repeat)
+        await context.send(repeat)
 
     @commands.command()
-    async def handhold(self):
+    async def handhold(self, context):
         """Sex is lewd because it can lead to handholding."""
-        await self.chiaki.say('That\'s l-lewd!')
+        await context.send('That\'s l-lewd!')
 
-    @commands.command(pass_context = True)
+    @commands.command()
     async def nerd(self, context, *, user):
         """Determines if user is a nerd."""
-        # this is legit just an in-joke function.
-        user = self.chiaki.get_cog('Nicknames').get_member(context, user)
+        user = await self.chiaki.get_cog('Nicknames').get_member(context, user)
         if not user:
             response = 'I don\'t know who that is?'
-        elif user.id == '106971793868197888':
+        # that's me!
+        elif user.id == 106971793868197888:
             response = '{0} is a cute anime girl.'.format(user.display_name)
         elif user.bot:
             response = '..........'
         else:
             response = '{0} is most definitely a nerd.'.format(user.display_name)
-        await self.chiaki.say(response)
+        await context.send(response)
 
-    @commands.command(pass_context = True)
+    @commands.command()
     async def icon(self, context, *, user):
         """Links to a larger version of the user's icon."""
-        user = self.chiaki.get_cog('Nicknames').get_member(context, user)
+        user = await self.chiaki.get_cog('Nicknames').get_member(context, user)
         if not user:
             response = 'I don\'t know who that is?'
         else:
             response = user.avatar_url
-        await self.chiaki.say(response)
+        await context.send(response)
 
 def setup(bot):
     bot.add_cog(Misc(bot))

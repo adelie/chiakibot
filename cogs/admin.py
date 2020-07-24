@@ -5,7 +5,7 @@ import inspect
 def owner_only():
     """Decorator to check if user is owner."""
     def owner_check(context):
-        return context.message.author.id == '106971793868197888'
+        return context.message.author.id == 106971793868197888
     return commands.check(owner_check)
 
 class Admin(commands.Cog):
@@ -16,24 +16,25 @@ class Admin(commands.Cog):
     def __init__(self, bot):
         self.chiaki = bot
 
-    @commands.command(pass_context = True, hidden = True)
+    @commands.command(hidden = True)
     @owner_only()
     async def debug(self, context, *, command):
         """Simple command for executing code."""
         result = eval(command)
         if inspect.isawaitable(result):
             result = await result
-        await self.chiaki.say(result)
+        await context.send(result)
 
     @commands.command(hidden = True)
     @owner_only()
-    async def logout(self):
+    async def logout(self, context):
         """Exits the bot."""
         await self.chiaki.logout()
 
     @commands.command(hidden = True)
     @owner_only()
-    async def changepresence(self, *, playing):
+    async def changepresence(self, context, *, playing):
+        # TODO: this is broken
         """Changes current 'playing' line."""
         # changing status is unnecessary at the moment.
         if playing == 'none' or playing == 'clear':

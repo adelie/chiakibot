@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import random, re
 
-operators = { '^' : (lambda a, b: a ** b, 4, 'right'), '*' : (lambda a, b: a * b, 3, 'left'),
+operators = { '^' : (lambda a, b: a ** b, 4, 'right'),
+              '*' : (lambda a, b: a * b, 3, 'left'),
               '/' : (lambda a, b: 1.0 * a / b, 3, 'left'), '+' : (lambda a, b: a + b, 2, 'left'),
               '-' : (lambda a, b: a - b, 2, 'left') }
 
@@ -12,22 +13,22 @@ class RNG(commands.Cog):
         self.chiaki = bot
 
     @commands.command()
-    async def coinflip(self):
+    async def coinflip(self, context):
         """Rolls a d2."""
         coin = 'heads' if random.randint(0, 1) else 'tails'
-        await self.chiaki.say('I rolled a two-sided dice, and it came up `{0}`.'.format(coin))
+        await context.send('I rolled a two-sided dice, and it came up `{0}`.'.format(coin))
 
     @commands.command()
-    async def choose(self, *options):
+    async def choose(self, context, *options):
         """Chooses one of many options."""
         chosen = options[random.randint(0, len(options) - 1)]
         extratag = ""
         if chosen == "die":
             extratag = " (But you really shouldn't.)"
-        await self.chiaki.say('I choose you, {0}!{1}'.format(chosen, extratag))
+        await context.send('I choose you, {0}!{1}'.format(chosen, extratag))
 
     @commands.command()
-    async def roll(self, *, dice):
+    async def roll(self, context, *, dice):
         """Rolls dice."""
         # this is kind of long, and breaks on a few not-so-weird cases, e.g. negatives.
         # oh well, it works i guess!
@@ -38,7 +39,7 @@ class RNG(commands.Cog):
         if len(tokens) == 1:
             final = self.roll_calculator(dice, True)
             if isinstance(final, list):
-                await self.chiaki.say('I rolled {0} for a sum of `{1}`.'.format(', '.join([str(x) for x in final]), str(sum(final))))
+                await context.send('I rolled {0} for a sum of `{1}`.'.format(', '.join([str(x) for x in final]), str(sum(final))))
                 return
         else:
             # parse into postfix notation for use, using the shunting-yard algorithm.
@@ -76,7 +77,7 @@ class RNG(commands.Cog):
                     stack.append(self.roll_calculator(token, False))
             final = stack[0]
 
-        await self.chiaki.say('I rolled `{0}` for a sum of `{1}`.'.format(dice, final))
+        await context.send('I rolled `{0}` for a sum of `{1}`.'.format(dice, final))
 
     def roll_calculator(self, dice, return_list):
         """Helper function for calculating rolls"""

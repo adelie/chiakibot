@@ -40,7 +40,7 @@ class Time(commands.Cog):
         # schedules loop not here because schedules not implemented, lol.
 
     @commands.command()
-    async def day(self):
+    async def day(self, context):
         """Shows current day of week."""
         now = datetime.now(tz = pytz.timezone('UTC'))
         est_day = now.astimezone(pytz.timezone('US/Eastern')).strftime("%A")
@@ -50,9 +50,9 @@ class Time(commands.Cog):
         else:
             response = '{0} greetings to all my online friends!'
             response = response.format(pst_day)
-        await self.chiaki.say(response)
+        await context.send(response)
 
-    @commands.group(aliases = ['remindme'], pass_context = True, invoke_without_command = True)
+    @commands.group(aliases = ['remindme'], invoke_without_command = True)
     async def remind(self, context, time, *, note):
         """Sets a reminder for you."""
         time = timeleft_to_seconds(time)
@@ -65,10 +65,10 @@ class Time(commands.Cog):
             self.reminders[key] = (author.id, author.mention, note, date.strftime('%c'),
                                    context.message.channel.id)
             self.tasks[key] = self.chiaki.loop.create_task(self.start_reminder(key, time))
-            await self.chiaki.say('Okay, I\'ll remind you in `{0}` seconds!'.format(time))
+            await context.send('Okay, I\'ll remind you in `{0}` seconds!'.format(time))
             self.save_to_file()
 
-    @remind.command(pass_context = True)
+    @remind.command()
     async def list(self, context):
         author = context.message.author
         # this was originally a list comprehension, but i've been informed people would
@@ -84,15 +84,15 @@ class Time(commands.Cog):
             response = '\n'.join(reminders)
         else:
             response = 'I don\'t have anything to remind you about.'
-        await self.chiaki.say(response)
+        await context.send(response)
 
-    @remind.command(pass_context = True)
+    @remind.command()
     async def remove(self, context, reminderId : int):
         if reminderId in self.reminders and self.reminders[reminderId][0] == context.message.author.id:
             self.reminders.pop(reminderId)
             task = self.tasks.pop(reminderId)
             task.cancel()
-            await self.chiaki.say('Successfully removed reminder `{0}`.'.format(reminderId))
+            await context.send('Successfully removed reminder `{0}`.'.format(reminderId))
             self.save_to_file()
 
     async def start_reminder(self, key, time):
@@ -107,7 +107,7 @@ class Time(commands.Cog):
             response = '{0}, you left a note for yourself: {1}'
             response = response.format(mention, note)
             channel = self.chiaki.get_channel(channel_id)
-            await self.chiaki.send_message(channel, response)
+            await channel.send(response)
 
     def save_to_file(self):
         """Utility function for saving to a JSON file."""
